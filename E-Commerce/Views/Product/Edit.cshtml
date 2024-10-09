@@ -1,0 +1,53 @@
+﻿@model Product
+
+<div class="row mb-3">
+    <h2><a href="/Product/Index"><i class="bi bi-arrow-left"></i></a> Create New Product</h2>
+</div>
+
+<div class="row">
+    <form action="/Product/Edit" enctype="multipart/form-data" method="post">
+        <input type="hidden" class="form-control" id="ProductsName" name="Id" value="@Model.Id">
+
+        <div class="mb-3">
+            <label for="ProductsName" class="form-label">Products Name</label>
+            <input type="text" class="form-control" id="ProductsName" name="Name" value="@Model.Name">
+        </div>
+        <div class="mb-3">
+            <label for="ProductsDescription" class="form-label">Products Description</label>
+            <input type="text" class="form-control" id="ProductsDescription" name="Description" value="@Model.Description">
+        </div>
+        <div class="mb-3">
+            <label for="ProductsPrice" class="form-label">Products Price</label>
+            <input type="number" class="form-control" id="ProductsPrice" name="Price" value="@Model.Price">
+        </div>
+        <div class="mb-3">
+            <label for="ProductsImgUrl" class="form-label">Products ImgUrl</label>
+            <input type="file" class="form-control" id="ProductsImgUrl" name="ImgUrl" onchange="previewImage(event)">
+            <!-- Image preview -->
+            <img id="imagePreview" src="~/images/@Model.ImgUrl" alt="Image Preview" style="margin-top: 10px; max-width: 300px;">
+        </div>
+        <div class="mb-3">
+            <label for="ProductsCategory" class="form-label">Products Category</label>
+@*             <input type="number" class="form-control" id="ProductsCategoryId" name="CategoryId" value="@Model.CategoryId">
+ *@              <select class="form-select" name="CategoryId">
+                @foreach (var item in ViewBag.categories)
+                  {
+                      <option value="@item.Id">@item.Name</option>
+                  }
+              </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<script>
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function() {
+            var output = document.getElementById('imagePreview');
+            output.src = reader.result;
+            output.style.display = 'block';
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
