@@ -14,36 +14,57 @@ namespace E_Commerce.Controllers
         {
             var products = dbContext.Products.Include(e => e.Category).ToList();
 
+            //ViewBag.name = TempData["test"];
+            //ViewBag.name = Request.Cookies["success"];
+
             return View(products);
         }
 
         public IActionResult Create()
         {
             var categories = dbContext.Categories.ToList();
+            ViewBag.categories = categories;
+            Product product = new Product();
 
-            return View(categories);
+            return View(product);
         }
 
         [HttpPost]
         public IActionResult Create(Product product, IFormFile ImgUrl)
         {
-            if (ImgUrl.Length > 0) // 99656
+            if(ModelState.IsValid)
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImgUrl.FileName); // .png
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
-
-                using (var stream = System.IO.File.Create(filePath))
+                if (ImgUrl.Length > 0) // 99656
                 {
-                    ImgUrl.CopyTo(stream);
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImgUrl.FileName); // .png
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        ImgUrl.CopyTo(stream);
+                    }
+
+                    product.ImgUrl = fileName;
                 }
 
-                product.ImgUrl = fileName;
+                dbContext.Products.Add(product);
+                dbContext.SaveChanges();
+
+                TempData["success"] = "Add Product Successfully";
+
+                //CookieOptions cookieOptions = new();
+                //cookieOptions.Expires = DateTime.Now.AddMinutes(1);
+
+                //Response.Cookies.Append("success", "Add Product Successfully", cookieOptions);
+
+                //HttpContext.Session.ge()
+
+                return RedirectToAction(nameof(Index));
             }
 
-            dbContext.Products.Add(product);
-            dbContext.SaveChanges();
-
-            return RedirectToAction(nameof(Index));
+            var categories = dbContext.Categories.ToList();
+            ViewBag.categories = categories;
+            return View(product);
         }
 
         public IActionResult Edit(int productId)
@@ -61,34 +82,45 @@ namespace E_Commerce.Controllers
         public IActionResult Edit(Product product, IFormFile ImgUrl)
         {
             var oldProduct = dbContext.Products.AsNoTracking().FirstOrDefault(e => e.Id == product.Id);
-
-            if (ImgUrl != null && ImgUrl.Length > 0) // 99656
+            if (ModelState.IsValid)
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImgUrl.FileName); // .png
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
-                var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", oldProduct.ImgUrl);
-
-                using (var stream = System.IO.File.Create(filePath))
+                if (ImgUrl != null && ImgUrl.Length > 0) // 99656
                 {
-                    ImgUrl.CopyTo(stream);
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImgUrl.FileName); // .png
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
+                    var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", oldProduct.ImgUrl);
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        ImgUrl.CopyTo(stream);
+                    }
+
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+
+                    product.ImgUrl = fileName;
+                }
+                else
+                {
+                    product.ImgUrl = oldProduct.ImgUrl;
                 }
 
-                if(System.IO.File.Exists(oldFilePath))
-                {
-                    System.IO.File.Delete(oldFilePath);
-                }
+                dbContext.Products.Update(product);
+                dbContext.SaveChanges();
 
-                product.ImgUrl = fileName;
-            }
-            else
-            {
-                product.ImgUrl = oldProduct.ImgUrl;
+                TempData["success"] = "Update Product Successfully";
+
+                return RedirectToAction(nameof(Index));
             }
 
-            dbContext.Products.Update(product);
-            dbContext.SaveChanges();
+            var categories = dbContext.Categories.ToList();
 
-            return RedirectToAction(nameof(Index));
+            //ViewData["categories"] = categories;
+            ViewBag.categories = categories;
+            product.ImgUrl = oldProduct.ImgUrl;
+            return View(product);
         }
 
         public IActionResult Delete(int productId)
@@ -104,6 +136,8 @@ namespace E_Commerce.Controllers
 
             dbContext.Products.Remove(product);
             dbContext.SaveChanges();
+
+            TempData["success"] = "Delete Product Successfully";
 
             return RedirectToAction(nameof(Index));
         }

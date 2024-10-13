@@ -1,5 +1,17 @@
 ﻿@model List<Product>
 
+@section Scripts {
+    @if(TempData["success"] != null)
+    {
+        <script>
+            toastr.success('@TempData["success"]')
+        </script>
+    }
+}
+
+
+@* <h1>@TempData["success"]</h1>
+ *@
 <div class="row mb-3">
     <div class="col-9">
         <h2>All Products</h2>

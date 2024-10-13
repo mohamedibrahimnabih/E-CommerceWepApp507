@@ -18,17 +18,23 @@ namespace E_Commerce.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            Category category = new Category();
+            return View(category);
         }
 
         [HttpPost]
         public IActionResult Create(Category category)
         {
-            //Category category = new Category() { Name = Name };
-            dbContext.Categories.Add(category);
-            dbContext.SaveChanges();
+            if(ModelState.IsValid)
+            {
+                //Category category = new Category() { Name = Name };
+                dbContext.Categories.Add(category);
+                dbContext.SaveChanges();
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            //
+            return View(category);
         }
 
 
@@ -41,11 +47,16 @@ namespace E_Commerce.Controllers
         [HttpPost]
         public IActionResult Edit(Category category)
         {
-            //Category category = new Category() { Name = Name };
-            dbContext.Categories.Update(category);
-            dbContext.SaveChanges();
+            if(ModelState.IsValid)
+            {
+                //Category category = new Category() { Name = Name };
+                dbContext.Categories.Update(category);
+                dbContext.SaveChanges();
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(category);
         }
 
         public IActionResult Delete(int categoryId)

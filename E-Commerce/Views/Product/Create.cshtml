@@ -1,4 +1,6 @@
-﻿<div class="row mb-3">
+﻿@model Product
+
+<div class="row mb-3">
     <h2><a href="/Product/Index"><i class="bi bi-arrow-left"></i></a> Create New Product</h2>
 </div>
 
@@ -6,20 +8,24 @@
     <form action="/Product/Create" enctype="multipart/form-data" method="post">
         <div class="mb-3">
             <label for="ProductsName" class="form-label">Products Name</label>
-            <input type="text" class="form-control" id="ProductsName" name="Name">
+            <input type="text" class="form-control" id="ProductsName" name="Name" value="@Model.Name">
+            <span asp-validation-for="Name" class="text-warning"></span>
         </div>
         <div class="mb-3">
             <label for="ProductsDescription" class="form-label">Products Description</label>
-            <input type="text" class="form-control" id="ProductsDescription" name="Description">
+            <input type="text" class="form-control" id="ProductsDescription" name="Description" value="@Model.Description">
+            <span asp-validation-for="Description" class="text-warning"></span>
         </div>
         <div class="mb-3">
             <label for="ProductsPrice" class="form-label">Products Price</label>
-            <input type="number" class="form-control" id="ProductsPrice" name="Price">
+            <input type="number" class="form-control" id="ProductsPrice" name="Price" value="@Model.Price">
+            <span asp-validation-for="Price" class="text-warning"></span>
         </div>
         <div class="mb-3">
             <label for="ProductsImgUrl" class="form-label">Products ImgUrl</label>
             <input type="file" class="form-control" id="ProductsImgUrl" name="ImgUrl" onchange="previewImage(event)">
             <!-- Image preview -->
+            <span asp-validation-for="ImgUrl" class="text-warning"></span>
             <img id="imagePreview" src="#" alt="Image Preview" style="display: none; margin-top: 10px; max-width: 300px;">
         </div>
         <div class="mb-3">
@@ -29,11 +35,12 @@
         
             <select class="form-select" name="CategoryId">
                 @* CategoryId=value *@
-                @foreach(var item in Model)
+                @foreach (var item in ViewBag.categories)
                 {
                     <option value="@item.Id">@item.Name</option>
                 }
             </select>
+            <span asp-validation-for="CategoryId" class="text-warning"></span>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>

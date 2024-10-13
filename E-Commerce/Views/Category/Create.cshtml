@@ -1,4 +1,6 @@
-﻿<div class="row mb-3">
+﻿@model Category
+
+<div class="row mb-3">
     <h2><a href="/Category/Index"><i class="bi bi-arrow-left"></i></a> Create New Category</h2>
 </div>
 
@@ -6,8 +8,14 @@
     <form action="/Category/Create" method="post">
         <div class="mb-3">
             <label for="CategoryName" class="form-label">Category Name</label>
-            <input type="text" class="form-control" id="CategoryName" name="Name">
+            <input class="form-control" asp-for="Name">
+            <span asp-validation-for="Name" class="text-warning"></span>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
