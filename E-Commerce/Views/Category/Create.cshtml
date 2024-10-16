@@ -1,5 +1,10 @@
 ﻿@model Category
 
+@* @{
+    Layout = "_LoginLayout";
+}
+ *@
+
 <div class="row mb-3">
     <h2><a href="/Category/Index"><i class="bi bi-arrow-left"></i></a> Create New Category</h2>
 </div>
@@ -16,6 +21,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <partial name="_ValidationScriptsPartial.cshtml">
 }

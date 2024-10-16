@@ -33,13 +33,14 @@
 @*             <input type="number" class="form-control" id="ProductsCategoryId" name="CategoryId">
  *@        
         
-            <select class="form-select" name="CategoryId">
-                @* CategoryId=value *@
+            @* <select class="form-select" name="CategoryId">
                 @foreach (var item in ViewBag.categories)
                 {
                     <option value="@item.Id">@item.Name</option>
                 }
-            </select>
+            </select> *@
+
+            <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.categories"></select>
             <span asp-validation-for="CategoryId" class="text-warning"></span>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>

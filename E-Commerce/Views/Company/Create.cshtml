@@ -1,0 +1,43 @@
+﻿@model Company
+
+<div class="row mb-3">
+    <h2><a asp-action="Index" asp-controller="Company"><i class="bi bi-arrow-left"></i></a> Create New Company</h2>
+</div>
+
+<div class="row">
+    <form asp-action="Create" asp-controller="Company">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input class="form-control" asp-for="Name">
+            <span asp-validation-for="Name" class="text-warning"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <input class="form-control" asp-for="Description">
+            <span asp-validation-for="Description" class="text-warning"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Address" class="form-label"></label>
+            <input class="form-control" asp-for="Address">
+            <span asp-validation-for="Address" class="text-warning"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    @* @using (Html.BeginForm(actionName: "Create", controllerName: "Company", FormMethod.Post))
+    {
+        <div class="mb-3">
+
+            @Html.LabelFor(e => e.Name, new { @class="form-label" })
+            @Html.EditorFor(e => e.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(e => e.Name, "Error", new { @class = "text-warning" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    } *@
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

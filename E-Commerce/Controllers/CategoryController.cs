@@ -23,6 +23,7 @@ namespace E_Commerce.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(Category category)
         {
             if(ModelState.IsValid)

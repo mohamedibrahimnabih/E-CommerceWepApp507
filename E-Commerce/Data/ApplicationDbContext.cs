@@ -7,12 +7,17 @@ namespace E_Commerce.Data
     {
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Company> Companies { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
 
-            optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=E-Commerce507;Integrated Security=True;TrustServerCertificate=True");
+            // Retrieve connection
+            var Connection = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json").Build().GetConnectionString("DefaultConnection");
+
+            optionsBuilder.UseSqlServer(Connection);
         }
     }
 }

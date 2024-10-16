@@ -21,9 +21,12 @@ namespace E_Commerce.Models
 
         [Required]
         public int CategoryId { get; set; }
+        public int? CompanyId { get; set; }
 
         [ValidateNever]
         public Category Category { get; set; }
+        [ValidateNever]
+        public Company Company { get; set; }
 
     }
 }
