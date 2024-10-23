@@ -17,22 +17,6 @@ namespace E_Commerce.Repository
         }
 
         // CRUD
-        public IEnumerable<T> GetAll(Expression<Func<T, object>>? includeProp = null, Expression<Func<T, bool>>? expression = null)
-        {
-            IQueryable query = dbSet;
-            if (includeProp != null)
-            {
-                dbSet.Include(includeProp);
-            }
-
-            return expression == null ? dbSet.ToList() : dbSet.Where(expression).ToList();
-        }
-
-        public T? GetOne(Expression<Func<T, bool>> expression)
-        {
-            return dbSet.Where(expression).FirstOrDefault();
-        }
-
         public void Add(T entity)
         {
             dbSet.Add(entity);
@@ -51,6 +35,36 @@ namespace E_Commerce.Repository
         public void Commit()
         {
             dbContext.SaveChanges();
+        }
+
+        public IEnumerable<T> GetAll(Expression<Func<T, object>>[]? includeProp = null, Expression<Func<T, bool>>? expression = null, bool tracked = true)
+        {
+            IQueryable<T> query = dbSet;
+
+            if (includeProp != null)
+            {
+                foreach (var item in includeProp)
+                {
+                    query = query.Include(item);
+                }
+            }
+
+            if(expression != null)
+            {
+                query = query.Where(expression);
+            }
+
+            if(tracked)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return query.ToList();
+        }
+
+        public T? GetOne(Expression<Func<T, object>>[]? includeProp = null, Expression<Func<T, bool>>? expression = null, bool tracked = true)
+        {
+            return GetAll(includeProp, expression, tracked).FirstOrDefault();
         }
     }
 }

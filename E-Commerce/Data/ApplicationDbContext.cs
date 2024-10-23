@@ -1,9 +1,11 @@
 ﻿using E_Commerce.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using E_Commerce.ViewModels;
 
 namespace E_Commerce.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -30,5 +32,7 @@ namespace E_Commerce.Data
 
             optionsBuilder.UseSqlServer(Connection);
         }
+        public DbSet<E_Commerce.ViewModels.ApplicationUserVM> ApplicationUserVM { get; set; } = default!;
+        public DbSet<E_Commerce.ViewModels.LoginVM> LoginVM { get; set; } = default!;
     }
 }

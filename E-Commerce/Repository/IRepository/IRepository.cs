@@ -5,9 +5,9 @@ namespace E_Commerce.Repository.IRepository
 {
     public interface IRepository<T> where T : class
     {
-        IEnumerable<T> GetAll(Expression<Func<T, object>>? includeProp = null, Expression<Func<T, bool>>? expression = null);
+        IEnumerable<T> GetAll(Expression<Func<T, object>>[]? includeProp = null, Expression<Func<T, bool>>? expression = null, bool tracked = true);
 
-        T? GetOne(Expression<Func<T, bool>> expression);
+        T? GetOne(Expression<Func<T, object>>[]? includeProp = null, Expression<Func<T, bool>>? expression = null, bool tracked = true);
         void Add(T category);
         void Edit(T category);
         void Delete(T category);
