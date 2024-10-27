@@ -25,7 +25,7 @@ namespace E_Commerce.Controllers
             //var categories = dbContext.Categories.Include("Products").ToList();
             var categories = categoryRepository.GetAll([e => e.Products]);
 
-            return View(categories);
+            return View(categories.ToList());
         }
 
         public IActionResult Create()

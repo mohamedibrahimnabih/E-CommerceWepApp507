@@ -37,7 +37,7 @@ namespace E_Commerce.Repository
             dbContext.SaveChanges();
         }
 
-        public IEnumerable<T> GetAll(Expression<Func<T, object>>[]? includeProp = null, Expression<Func<T, bool>>? expression = null, bool tracked = true)
+        public IQueryable<T> GetAll(Expression<Func<T, object>>[]? includeProp = null, Expression<Func<T, bool>>? expression = null, bool tracked = true)
         {
             IQueryable<T> query = dbSet;
 
@@ -59,7 +59,7 @@ namespace E_Commerce.Repository
                 query = query.AsNoTracking();
             }
 
-            return query.ToList();
+            return query;
         }
 
         public T? GetOne(Expression<Func<T, object>>[]? includeProp = null, Expression<Func<T, bool>>? expression = null, bool tracked = true)

@@ -14,14 +14,31 @@ namespace E_Commerce.Controllers
     {
         ApplicationDbContext dbContext = new();
 
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, string? search = null) // Iphone13
         {
-            var products = dbContext.Products.Include(e => e.Category).ToList();
+            if (page <= 0)
+                //return RedirectToAction("NotFoundPage", "Home");
+                page = 1;
+
+            IQueryable<Product> products = dbContext.Products.Include(e => e.Category);
+
+            if(search != null && search.Length > 0)
+            {
+                search = search.TrimStart();
+                search = search.TrimEnd();
+                products = products.Where(e => e.Name.Contains(search) || e.Description.Contains(search));
+            }
+
+            products = products.Skip((page - 1) * 5).Take(5);
+
+            if (products.Any())
+            {
+                return View(products.ToList());
+            }
 
             //ViewBag.name = TempData["test"];
             //ViewBag.name = Request.Cookies["success"];
-
-            return View(products);
+            return RedirectToAction("NotFoundPage", "Home");
         }
 
         public IActionResult Create()

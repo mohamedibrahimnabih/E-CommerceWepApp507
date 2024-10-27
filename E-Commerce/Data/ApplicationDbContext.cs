@@ -15,6 +15,7 @@ namespace E_Commerce.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<Cart> Carts { get; set; }
 
         // ==============================================================================
         public ApplicationDbContext()
@@ -32,7 +33,6 @@ namespace E_Commerce.Data
 
             optionsBuilder.UseSqlServer(Connection);
         }
-        public DbSet<E_Commerce.ViewModels.ApplicationUserVM> ApplicationUserVM { get; set; } = default!;
-        public DbSet<E_Commerce.ViewModels.LoginVM> LoginVM { get; set; } = default!;
+
     }
 }

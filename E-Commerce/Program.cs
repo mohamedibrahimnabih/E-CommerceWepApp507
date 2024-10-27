@@ -24,6 +24,7 @@ namespace E_Commerce
         .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
 
             var app = builder.Build();
 
