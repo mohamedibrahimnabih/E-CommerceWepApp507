@@ -54,7 +54,7 @@ namespace E_Commerce.Repository
                 query = query.Where(expression);
             }
 
-            if(tracked)
+            if(!tracked)
             {
                 query = query.AsNoTracking();
             }

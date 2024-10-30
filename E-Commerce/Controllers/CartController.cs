@@ -4,6 +4,7 @@ using E_Commerce.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Stripe.Checkout;
 
 namespace E_Commerce.Controllers
 {
@@ -40,11 +41,103 @@ namespace E_Commerce.Controllers
         {
             var ApplicationUserId = userManager.GetUserId(User);
 
-            var cartProduct = cartRepository.GetAll([e => e.Product]).Where(e=>e.ApplicationUserId== ApplicationUserId);
+            var cartProduct = cartRepository.GetAll([e => e.Product], e => e.ApplicationUserId == ApplicationUserId).ToList();
 
             ViewBag.Total = cartProduct.Sum(e => e.Product.Price * e.Count);
 
             return View(cartProduct.ToList());
+        }
+
+        public IActionResult Increment(int productId)
+        {
+            var ApplicationUserId = userManager.GetUserId(User);
+
+            var product = cartRepository.GetOne(expression: e => e.ApplicationUserId == ApplicationUserId && e.ProductId == productId);
+
+            if(product != null)
+            {
+                product.Count++;
+                cartRepository.Commit();
+
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("NotFoundPage", "Home");
+        }
+
+        public IActionResult Decrement(int productId)
+        {
+            var ApplicationUserId = userManager.GetUserId(User);
+
+            var product = cartRepository.GetOne(expression: e => e.ApplicationUserId == ApplicationUserId && e.ProductId == productId);
+
+            if (product != null)
+            {
+                product.Count--;
+
+                if (product.Count > 0)
+                    cartRepository.Commit();
+                else
+                    product.Count = 1;
+
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("NotFoundPage", "Home");
+        }
+
+        public IActionResult Delete(int productId)
+        {
+            var ApplicationUserId = userManager.GetUserId(User);
+
+            var product = cartRepository.GetOne(expression: e => e.ApplicationUserId == ApplicationUserId && e.ProductId == productId);
+
+            if (product != null)
+            {
+                cartRepository.Delete(product);
+                cartRepository.Commit();
+
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("NotFoundPage", "Home");
+        }
+
+        public IActionResult Pay()
+        {
+            var ApplicationUserId = userManager.GetUserId(User);
+
+            var cartProduct = cartRepository.GetAll([e => e.Product], e => e.ApplicationUserId == ApplicationUserId).ToList();
+
+            var options = new SessionCreateOptions
+            {
+                PaymentMethodTypes = new List<string> { "card" },
+                LineItems = new List<SessionLineItemOptions>(),
+                Mode = "payment",
+                SuccessUrl = $"{Request.Scheme}://{Request.Host}/checkout/success",
+                CancelUrl = $"{Request.Scheme}://{Request.Host}/checkout/cancel",
+            };
+
+            foreach (var item in cartProduct)
+            {
+                options.LineItems.Add(new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        Currency = "egp",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Product.Name,
+                        },
+                        UnitAmount = (long)item.Product.Price * 100,
+                    },
+                    Quantity = item.Count,
+                });
+            }
+
+            var service = new SessionService();
+            var session = service.Create(options);
+            return Redirect(session.Url);
         }
     }
 }
